@@ -1,5 +1,9 @@
 <?php
-    include "init_db.php";
+    include_once "init_db.php";
+    $req = $conn->prepare("SELECT DISTINCT film.name as name, t2.title as genre FROM film
+                INNER JOIN film_genre as t1 ON t1.film_id = film.id
+                INNER JOIN genre as t2 ON t2.id = t1.genre_id
+                WHERE t2.title = :selected_genre");
 ?>
 
 <html>
@@ -13,14 +17,12 @@
         <?php
             if ($_SERVER['REQUEST_METHOD'] === 'POST')  {
                 $selected_genre = $_POST['genre'];
-                $res = $conn->query("SELECT DISTINCT film.name as name, t2.title as genre FROM film
-                INNER JOIN film_genre as t1 ON t1.film_id = film.id
-                INNER JOIN genre as t2 ON t2.id = t1.genre_id
-                WHERE t2.title = '$selected_genre'");
+                $req->execute(array(':selected_genre' => $selected_genre));
+                $res = $req->fetchAll();
 
-                echo '<p> Found ', $res->num_rows, ' films</p>';
+                echo '<p> Found ', count($res), ' films</p>';
 
-                while($row = $res->fetch_assoc()) {
+                foreach($res as $row) {
                     echo "<div>Title: ", $row["name"], '; ', $row["genre"],  "</div>";
                 }
             }

@@ -13,7 +13,7 @@
             <input type="submit" value="Find!">
         </form>
 
-        <form id="form" method="post" action="/slab5/search_by_year.php">
+        <form id="form" method="post" action="/lab5/search_by_year.php">
             FROM: <input type="number", name="from" placeholder="YYYY">
             TO: <input type="number", name="to" placeholder="YYYY">
             <br>

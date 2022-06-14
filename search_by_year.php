@@ -1,5 +1,7 @@
 <?php
-    include "init_db.php";
+    include_once "init_db.php";
+    $req = $conn->prepare("SELECT name FROM film
+                WHERE date >= :from AND date <= :to");
 ?>
 
 <html>
@@ -14,12 +16,12 @@
             if ($_SERVER['REQUEST_METHOD'] === 'POST')  {
                 $from = $_POST["from"];
                 $to = $_POST["to"];
-                $res = $conn->query("SELECT name FROM film
-                WHERE date >= '$from' AND date <= '$to'");
+                $req->execute(array(':from' => $from, ':to' => $to));
+                $res = $req->fetchAll();
 
-                echo '<p> Found ', $res->num_rows, ' films</p>';
+                echo '<p> Found ', count($res), ' films</p>';
 
-                while($row = $res->fetch_assoc()) {
+                foreach($res as $row) {
                     echo "<div>Title: ", $row["name"], "</div>";
                 }
             }
